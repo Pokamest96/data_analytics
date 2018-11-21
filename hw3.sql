@@ -1,6 +1,7 @@
 SELECT 'ФИО: Покаместов Александр Игоревич';
 
 SELECT userId, movieId, 
+	CASE WHEN  min(rating) OVER (PARTITION BY userId) =  max(rating) OVER (PARTITION BY userId) THEN 1 ELSE 
 	(rating - min(rating) OVER (PARTITION BY userId))/(max(rating) OVER (PARTITION BY userId) - min(rating) OVER (PARTITION BY userId)) as normed_rating,
 	AVG(rating) OVER (PARTITION BY userId) as avg_rating
 FROM ratings 
