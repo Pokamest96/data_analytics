@@ -10,6 +10,7 @@ SELECT COUNT(*) FROM LINKS LEFT JOIN ratings ON links.movieid=ratings.movieid WH
 -- 3.2
 SELECT userid, avg(rating) AS average_rating FROM ratings GROUP BY userid having AVG(rating) > 3.5 ORDER BY 2 DESC LIMIT 10;
 -- 4.1
-SELECT imdbid FROM links LEFT JOIN ratings ON links.movieid=ratings.movieid WHERE AVG(ratings.rating) >3.5 LIMIT 10;
+SELECT imdbid FROM links WHERE imdbid IN (SELECT imdbid FROM ratings GROUP BY imdbid HAVING AVG(rating)>3.5) LIMIT 10;
 -- 4.2
-SELECT AVG(rating) FROM ratings WHERE userid IN (SELECT userid FROM ratings GROUP BY userid HAVING count(*)>10);
+WITH sredrat as (SELECT userid FROM ratings GROUP BY userid HAVING count(*)>10)
+SELECT AVG(rating) FROM ratings, sredrat WHERE ratings.userid IN (sredrat.userid);
